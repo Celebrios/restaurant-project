@@ -10,15 +10,23 @@ def load_state():
         with open(STATE_FILE, 'r') as f:
             return json.load(f)            
     except FileNotFoundError:              
-        return {}
+        return {
+            'users':{},
+            'counters': {
+                'max_user_id': 0
+            },
+            'menu_items_by_id':{},
+            'menu_items_by_name':{}
+        }
 
 def save_db():
     with open(STATE_FILE, 'w') as f:      
         json.dump(db, f, indent=4)   
 
 db = load_state()
-db['users'] = {}
-db['counters'] = {'max_user_id': 0}
+# db['MenuItemsByName'] = {} ---> in development
+Menu_items_base = db['menu_items_by_id']
+# Menu_items_base_by_name = db['MenuItemsByName'] ---> in development
 counters = db['counters']
 save_db()
 
