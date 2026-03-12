@@ -13,7 +13,8 @@ def load_state():
         return {
             'users':{},
             'counters': {
-                'max_user_id': 0
+                'max_user_id': 0,
+                'max_menu_item_id': 0
             },
             'menu_items_by_id':{},
             'menu_items_by_name':{}
@@ -34,6 +35,12 @@ def get_new_user_id():
     counters['max_user_id'] += 1
     save_db()
     return counters['max_user_id']
+
+def get_new_menu_item_id():
+    counters['max_menu_item_id'] += 1
+    save_db()
+    return counters['max_menu_item_id']
+
 
 
 
