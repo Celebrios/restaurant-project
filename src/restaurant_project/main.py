@@ -34,10 +34,14 @@ def get_menu(
     if category:
         filtered = []
         for item in Menu_items_base.values():
-            if item['category'] == category:
-                if available_only and item['is_available']:
-                    filtered.append(item)
-                    continue
-                filtered.append(item)
+            if item['category'] != category:
+                continue
+            if available_only and not item['is_available']:
+                continue
+            filtered.append(item)
         return filtered
+
+    if available_only:
+        return [item for item in Menu_items_base.values() if item['is_available']]
+
     return Menu_items_base.values()
