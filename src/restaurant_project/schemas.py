@@ -3,7 +3,7 @@ from typing import Optional
 from datetime import datetime
 from enum import Enum
 from string import digits
-from .jsondb import get_menu_item, get_menu_items
+from .jsondb import get_menu_item, Menu_items_base
 
 TAX = 10
 
@@ -32,7 +32,8 @@ class OrderItem(BaseModel):
     @field_validator('menu_item_id')
     @classmethod
     def menu_item_id_validate(cls, id):
-        if id not in get_menu_items():
+        if id not in Menu_items_base:
+            print(id, Menu_items_base)
             raise ValueError('uncorrect item id')
         return id
 
