@@ -75,8 +75,36 @@ def create_order(order: OrderCreate):
         'tax': tax,
         'discount': discount,
         'final_price': final_price,
-        'status': OrderStatus.PENDING,
-        'created_at': now,
-        'estimated_ready_at': estimated_ready_at
+        'status': OrderStatus.PENDING.value,
+        'created_at': now.isoformat(),
+        'estimated_ready_at': estimated_ready_at.isoformat()
     }
+    jsondb.add_new_order(new_id, new_order)
     return new_order
+
+@app.get('/orders/{order_id}', response_model=OrderResponse)
+def get_order(order_id: int):
+    return jsondb.get_order(order_id)
+
+@app.get('/orders', response_model=list[OrderResponse])
+def get_all_orders(
+    status: Optional[OrderStatus] = None,
+    table: Optional[int] = None
+):
+    orders = jsondb.orders.values()
+    if table: 
+        if status:
+            filtered = filter(lambda order: order['table_number'] == table, orders)
+            filtered = filter(lambda order: order['status'] == status, filtered)
+            return list(filtered)
+        return list(filter(lambda order: order['table_number'] == table, orders))
+    if status: 
+        return list(filter(lambda order: order['status'] == status, orders))
+    return orders
+
+
+@app.patch('/orders/{order_id}/status', response_model=OrderResponse)
+def change_status(order_id: int, status: OrderStatus):
+    order = jsondb.get_order(order_id)
+    order['status'] = status
+    return order
